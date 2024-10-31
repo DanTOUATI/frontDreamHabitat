@@ -1,7 +1,31 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { FcGoogle } from 'react-icons/fc';
+import axios from 'axios';
 
 const SignUp = () => {
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+  
+    const user = {
+      name,
+      email,
+      password
+    };
+  
+    try {
+      const res = await axios.post(`http://localhost:8080/api/users/addUser`, user);
+      console.log(res.data);
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
@@ -28,20 +52,50 @@ const SignUp = () => {
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
         
-        <form>
+        <form onSubmit={handleSubmit}>
+         
+        <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nom">
+              Nom
+            </label>
+            <input 
+            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+            id="name" 
+            type="text" 
+            placeholder="Votre Nom" 
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
               E-mail
             </label>
-            <input className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" placeholder="Votre email" />
+            <input 
+            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+            id="email" 
+            type="email" 
+            placeholder="Votre email" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
               Mot de passe
             </label>
-            <input className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Votre mot de passe" />
+            <input 
+            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" 
+            id="password" 
+            type="password" 
+            placeholder="Votre mot de passe"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} />
+           
           </div>
-          <button className="w-full font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 transition duration-300" type="button">
+          <button className="w-full font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 transition duration-300" 
+          type="submit">
           Continuer
           </button>
      
