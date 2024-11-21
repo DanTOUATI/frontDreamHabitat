@@ -14,6 +14,7 @@ sync_to_github:
     - ls repo
     - rsync -a --delete ./ repo/front/
     - cd repo
+    - ls front
     - git config user.name "YoubaDJAOUTI"
     - git config user.email "youba.djaouti@epitech.eu"
     - git add front/
