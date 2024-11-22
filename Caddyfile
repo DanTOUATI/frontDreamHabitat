@@ -1,5 +1,5 @@
 ec2-54-78-228-181.eu-west-1.compute.amazonaws.com {
-  # Activer HTTPS automatique (Let's Encrypt)
+  # Activer HTTPS automatique
   root * /usr/share/caddy
   file_server
 
@@ -13,15 +13,14 @@ ec2-54-78-228-181.eu-west-1.compute.amazonaws.com {
     try_files {path} /index.html
   }
 
-  # Logs
+  # Logs d'accès
   log {
     output file /var/log/caddy/access.log
     format json
   }
 
-  # Erreurs
+  # Gestion des erreurs
   handle_errors {
     respond "{http.error.status_code} {http.error.status_text}" 500
   }
 }
-
