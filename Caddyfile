@@ -5,7 +5,7 @@ dreamhabitat.victor-zhang.fr {
 
   # Proxy pour les requêtes API vers le backend
   handle /api/* {
-    reverse_proxy backend:8080
+    reverse_proxy app:8080
   }
 
   # Gérer les routes React (SPA)
