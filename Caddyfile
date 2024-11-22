@@ -8,7 +8,13 @@ dreamhabitat.victor-zhang.fr {
   file_server
 
   handle /api/* {
-    reverse_proxy app:8080
+    reverse_proxy app:8080 {
+      # Add necessary headers for CORS
+      header_down Access-Control-Allow-Origin https://dreamhabitat.victor-zhang.fr
+      header_down Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE"
+      header_down Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+      header_down Access-Control-Allow-Credentials true
+    }
   }
 
   handle {
