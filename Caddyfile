@@ -1,3 +1,21 @@
+(headers) {
+        header {
+                Strict-Transport-Security "max-age=31536000;"
+                X-Xss-Protection "1; mode=block"
+                X-Robots-Tag "none"
+                -Server
+                # Ajoute les en-têtes CORS ici
+                Access-Control-Allow-Origin "https://dreamhabitat.victor-zhang.fr"
+                Access-Control-Allow-Methods "GET, POST, OPTIONS, PUT, DELETE"
+                Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                Access-Control-Allow-Credentials "true"
+        }
+}
+(logging) {
+        log {
+                output stdout
+        }
+}
 {
   acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
   email juba.djaouti@gmail.com
