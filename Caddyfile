@@ -1,4 +1,4 @@
-ec2-54-78-228-181.eu-west-1.compute.amazonaws.com {
+dreamhabitat.victor-zhang.fr {
   # Activer HTTPS automatique
   root * /usr/share/caddy
   file_server
