@@ -19,7 +19,7 @@ const Room = () => {
   useEffect(() => {
     const fetchUserRooms = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/room/user', {
+        const response = await fetch('https://dreamhabitat.victor-zhang.fr/api/room/user', {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

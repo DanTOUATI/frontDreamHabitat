@@ -21,7 +21,7 @@ const SignUp = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/addUser", {
+      const response = await fetch("https://dreamhabitat.victor-zhang.fr/api/users/addUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
