@@ -1,6 +1,6 @@
 {
   acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
-  email votre_email@example.com
+  email juba.djaouti@gmail.com
 }
 
 dreamhabitat.victor-zhang.fr {
