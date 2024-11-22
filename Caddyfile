@@ -1,0 +1,15 @@
+:80 {
+  # Servir les fichiers statiques du frontend
+  root * /usr/share/caddy
+  file_server
+
+  # Proxy pour les requêtes API vers le backend
+  handle /api/* {
+    reverse_proxy backend:8080
+  }
+
+  # Gérer les routes React (SPA)
+  handle {
+    try_files {path} /index.html
+  }
+}
