@@ -10,26 +10,32 @@ import Blog from './components/Blog';
 import Contact from './components/Contact';
 import Features from './components/Features';
 import Pro from './components/Pro';
-
+import { Provider } from 'react-redux';
+import store from './store/store';
+import CreateRoomType from './components/CreateRoomType';
 
 function App() {
   return (
+    <Provider store={store}> 
     <Router>
       <div className="App">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/pro" element={<Pro />} />
-          <Route path="/comment-ca-marche" element={<Room />} />
+          <Route path="/create-room-type" element={<CreateRoomType />} />
+          <Route path="/room-design" element={<Room />} />
+          {/* room-design */}
           <Route path="/caracteristiques" element={<Features/>} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/tarifs" element={<Pricing />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/signin" element={<SignIn />} />
+          <Route path="/register" element={<SignUp />} />
+          <Route path="/login" element={<SignIn />} />
         </Routes>
       </div>
     </Router>
+    </Provider>
   );
 }
 

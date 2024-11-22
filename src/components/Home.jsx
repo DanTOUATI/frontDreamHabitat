@@ -32,7 +32,7 @@ const Home = () => {
             Choisissez un style, téléchargez votre photo, réinventez votre chez-vous maintenant
           </p>
           <Link
-            to="/comment-ca-marche"
+            to="/create-room-type"
             className="inline-block px-8 py-4 text-lg font-semibold text-white rounded-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 transition duration-300 ease-in-out transform hover:-translate-y-1"
           >
             Commancez
