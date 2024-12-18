@@ -1,12 +1,13 @@
-import { useState, useRef, useEffect } from "react";
-import { Upload } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useState, useRef, useEffect } from 'react';
+import { Upload } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import UploadZone from './UploadZone';
 
 // Fonctions utilitaires
 const isJsonResponse = (response) => {
-  const contentType = response.headers.get("content-type");
-  return contentType && contentType.includes("application/json");
+  const contentType = response.headers.get('content-type');
+  return contentType && contentType.includes('application/json');
 };
 
 const parseResponse = async (response) => {
@@ -15,11 +16,11 @@ const parseResponse = async (response) => {
     try {
       return JSON.parse(text);
     } catch (e) {
-      console.error("Texte reçu non-JSON:", text);
-      throw new Error("Réponse invalide du serveur");
+      console.error('Texte reçu non-JSON:', text);
+      throw new Error('Réponse invalide du serveur');
     }
   } catch (e) {
-    throw new Error("Erreur lors de la lecture de la réponse");
+    throw new Error('Erreur lors de la lecture de la réponse');
   }
 };
 
@@ -27,8 +28,8 @@ const Room = () => {
   // États pour la gestion des images
   const [selectedImage, setSelectedImage] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedRoomType, setSelectedRoomType] = useState("");
-  const [selectedStyle, setSelectedStyle] = useState("Modern");
+  const [selectedRoomType, setSelectedRoomType] = useState('');
+  const [selectedStyle, setSelectedStyle] = useState('Modern');
 
   // États pour la gestion des données
   const [userRooms, setUserRooms] = useState([]);
@@ -47,56 +48,47 @@ const Room = () => {
   const location = useLocation();
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
-
+  // Liste des types de pièces
+  const allRoomTypes = [
+    'Living room', 'Bedroom', 'Bath room', 'Attic', 'Kitchen',
+    'Dining room', 'Study room', 'Home office', 'Gaming room',
+    'House exterior', 'Outdoor pool area', 'Outdoor patio',
+    'Outdoor garden', 'Meeting room', 'Workshop', 'Fitness gym',
+    'Coffee shop', 'Clothing store', 'Walk in closet', 'Toilet',
+    'Restaurant', 'Office', 'Coworking space', 'Hotel lobby',
+    'Hotel room', 'Hotel bathroom', 'Exhibition space', 'Mudroom'
+  ];
   // Liste des styles disponibles
   const styles = [
-    "Eastern",
-    "Modern",
-    "Minimalist",
-    "Contemporary",
-    "Scandinavian",
-    "Zen",
-    "Midcentury modern",
-    "Tropical",
-    "Art deco",
-    "Farmhouse",
-    "Japanese design",
-    "Rustic",
-    "Bohemian",
-    "Coastal",
-    "Cottagecore",
-    "Vintage",
-    "French country",
-    "Gaming room",
-    "Baroque",
-    "Ski chalet",
-    "Christmas",
-    "Tribal",
-    "Medieval",
-    "Chinese New Year",
-    "Halloween",
-    "Neoclassic",
+    'Eastern', 'Modern', 'Minimalist', 'Contemporary', 'Scandinavian',
+    'Zen', 'Midcentury modern', 'Tropical', 'Art deco', 'Farmhouse',
+    'Japanese design', 'Rustic', 'Bohemian', 'Coastal', 'Cottagecore',
+    'Vintage', 'French country', 'Gaming room', 'Baroque', 'Ski chalet',
+    'Christmas', 'Tribal', 'Medieval', 'Chinese New Year', 'Halloween',
+    'Neoclassic'
   ];
-
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
   // Effet pour charger les pièces de l'utilisateur
   useEffect(() => {
     const fetchUserRooms = async () => {
       if (!token) return;
 
       try {
-        const response = await fetch("https://dreamhabitat.victor-zhang.fr/api/room/user", {
+        const response = await fetch('https://dreamhabitat.victor-zhang.fr/api/room/user', {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         });
 
         if (!response.ok) {
-          throw new Error("Erreur lors de la récupération des pièces");
+          throw new Error('Erreur lors de la récupération des pièces');
         }
 
         if (!isJsonResponse(response)) {
-          throw new Error("Format de réponse invalide");
+          throw new Error('Format de réponse invalide');
         }
 
         const data = await parseResponse(response);
@@ -104,14 +96,14 @@ const Room = () => {
 
         // Sélectionner le type de pièce initial
         const selectedType = location.state?.selectedType;
-        if (selectedType && data.some((room) => room.title === selectedType)) {
+        if (selectedType && data.some(room => room.title === selectedType)) {
           setSelectedRoomType(selectedType);
         } else if (data.length > 0) {
           setSelectedRoomType(data[0].title);
         }
       } catch (error) {
-        console.error("Erreur:", error);
-        setError("Erreur lors du chargement des pièces");
+        console.error('Erreur:', error);
+        setError('Erreur lors du chargement des pièces');
       } finally {
         setIsLoading(false);
       }
@@ -147,21 +139,21 @@ const Room = () => {
   const validateImageFile = (file) => {
     return new Promise((resolve, reject) => {
       if (!file) {
-        reject(new Error("Aucun fichier sélectionné"));
+        reject(new Error('Aucun fichier sélectionné'));
         return;
       }
 
       // Vérifier le type MIME
-      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
       if (!validTypes.includes(file.type)) {
-        reject(new Error("Format d'image non supporté. Utilisez JPG ou PNG."));
+        reject(new Error('Format d\'image non supporté. Utilisez JPG ou PNG.'));
         return;
       }
 
       // Vérifier la taille (max 10MB)
       const maxSize = 10 * 1024 * 1024;
       if (file.size > maxSize) {
-        reject(new Error("Image trop grande. Maximum 10MB."));
+        reject(new Error('Image trop grande. Maximum 10MB.'));
         return;
       }
 
@@ -173,11 +165,7 @@ const Room = () => {
         URL.revokeObjectURL(objectUrl);
         const maxDimension = 4096;
         if (img.width > maxDimension || img.height > maxDimension) {
-          reject(
-            new Error(
-              `Image trop grande. Maximum ${maxDimension}x${maxDimension} pixels.`
-            )
-          );
+          reject(new Error(`Image trop grande. Maximum ${maxDimension}x${maxDimension} pixels.`));
           return;
         }
         resolve(true);
@@ -185,7 +173,7 @@ const Room = () => {
 
       img.onerror = () => {
         URL.revokeObjectURL(objectUrl);
-        reject(new Error("Image invalide ou corrompue."));
+        reject(new Error('Image invalide ou corrompue.'));
       };
 
       img.src = objectUrl;
@@ -205,7 +193,7 @@ const Room = () => {
         setGeneratedImage(null);
       };
       reader.onerror = () => {
-        setError("Erreur lors de la lecture du fichier");
+        setError('Erreur lors de la lecture du fichier');
       };
       reader.readAsDataURL(file);
     } catch (error) {
@@ -242,7 +230,7 @@ const Room = () => {
   //       const fileName = `room_${Date.now()}.jpg`;
 
   //       // Créer un nouveau fichier avec le type MIME explicite
-  //       const file = new File([blob], fileName, {
+  //       const file = new File([blob], fileName, { 
   //         type: 'image/jpeg',
   //         lastModified: Date.now()
   //       });
@@ -306,6 +294,7 @@ const Room = () => {
   //       console.log("282 setGeneratedImage : ",setGeneratedImage(generatedData.path))
   //       setGeneratedImage(generatedData.path);
 
+
   //     } catch (error) {
   //       console.error('Error details:', error);
   //       setError(error.message || 'Une erreur est survenue');
@@ -316,7 +305,7 @@ const Room = () => {
   //   };
   const handleRenderDesigns = async () => {
     if (!selectedImage) {
-      setError("Veuillez d'abord télécharger une image");
+      setError('Veuillez d\'abord télécharger une image');
       return;
     }
 
@@ -325,11 +314,9 @@ const Room = () => {
 
     try {
       // 1. Trouver la pièce sélectionnée
-      const selectedRoom = userRooms.find(
-        (room) => room.title === selectedRoomType
-      );
+      const selectedRoom = userRooms.find(room => room.title === selectedRoomType);
       if (!selectedRoom) {
-        throw new Error("Type de pièce non trouvé");
+        throw new Error('Type de pièce non trouvé');
       }
 
       // 2. Upload de la photo
@@ -338,56 +325,51 @@ const Room = () => {
       const fileName = `room_${Date.now()}.jpg`;
 
       const file = new File([blob], fileName, {
-        type: "image/jpeg",
-        lastModified: Date.now(),
+        type: 'image/jpeg',
+        lastModified: Date.now()
       });
-
+  
+    
       const formData = new FormData();
-      formData.append("file", file);
-      formData.append("roomId", selectedRoom.id);
-      formData.append("description", `Room design for ${selectedRoomType}`);
-      formData.append("name", fileName);
+      formData.append('file', file);
+      formData.append('roomId', selectedRoom.id);
+      formData.append('description', `Room design for ${selectedRoomType}`);
+      formData.append('name', fileName);
 
-      const uploadResponse = await fetch(
-        "https://dreamhabitat.victor-zhang.fr/api/photo/upload",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
+      const uploadResponse = await fetch('https://dreamhabitat.victor-zhang.fr/api/photo/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
 
       if (!uploadResponse.ok) {
         const responseText = await uploadResponse.text();
-        console.error("Upload error response:", responseText);
+        console.error('Upload error response:', responseText);
         throw new Error(`Échec de l'upload: ${uploadResponse.status}`);
       }
 
       // 3. Récupérer les photos de la pièce pour obtenir l'ID de la dernière photo uploadée
-      const photosResponse = await fetch(
-        `https://dreamhabitat.victor-zhang.fr/api/photo/room/${selectedRoom.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+      const photosResponse = await fetch(`https://dreamhabitat.victor-zhang.fr/api/photo/room/${selectedRoom.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-      );
+      });
 
       if (!photosResponse.ok) {
-        throw new Error("Erreur lors de la récupération des photos");
+        throw new Error('Erreur lors de la récupération des photos');
       }
 
       const photos = await photosResponse.json();
       if (!Array.isArray(photos) || photos.length === 0) {
-        throw new Error("Aucune photo trouvée pour cette pièce");
+        throw new Error('Aucune photo trouvée pour cette pièce');
       }
 
       // Prendre la dernière photo uploadée (celle avec l'ID le plus élevé)
       const lastPhoto = photos.reduce((prev, current) =>
-        prev.id > current.id ? prev : current
+        (prev.id > current.id) ? prev : current
       );
 
       setUploadedPhotoId(lastPhoto.id);
@@ -395,42 +377,43 @@ const Room = () => {
       setIsGenerating(true);
 
       // 4. Générer l'image IA avec l'ID de la dernière photo
-      const generateUrl = new URL("https://dreamhabitat.victor-zhang.fr/api/interior/res");
-      generateUrl.searchParams.append("style", selectedStyle);
-      generateUrl.searchParams.append("room_type", selectedRoomType);
-      generateUrl.searchParams.append("upscale", "true");
-      generateUrl.searchParams.append("model", "openjourney-v4");
-      generateUrl.searchParams.append("photo_id", lastPhoto.id);
+      const generateUrl = new URL('https://dreamhabitat.victor-zhang.fr/api/interior/res');
+      generateUrl.searchParams.append('style', selectedStyle);
+      generateUrl.searchParams.append('room_type', selectedRoomType);
+      generateUrl.searchParams.append('upscale', 'true');
+      generateUrl.searchParams.append('model', 'sd15');
+      generateUrl.searchParams.append('photo_id', lastPhoto.id);
 
-      console.log("Generating with photo ID:", lastPhoto.id);
+      console.log('Generating with photo ID:', lastPhoto.id);
 
       const generateResponse = await fetch(generateUrl.toString(), {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
       });
 
       if (!generateResponse.ok) {
-        throw new Error("Generation failed");
+        throw new Error('Generation failed');
       }
 
       const generatedData = await generateResponse.json();
       if (!generatedData || !generatedData.path) {
-        throw new Error("Chemin de l'image généré manquant dans la réponse");
+        throw new Error('Chemin de l\'image généré manquant dans la réponse');
       }
 
       setGeneratedImage(generatedData.path);
+
     } catch (error) {
-      console.error("Error details:", error);
-      setError(error.message || "Une erreur est survenue");
+      console.error('Error details:', error);
+      setError(error.message || 'Une erreur est survenue');
     } finally {
       setIsUploading(false);
       setIsGenerating(false);
     }
   };
-  console.log("294 generatedImage : ", generatedImage);
+  console.log("294 generatedImage : ", generatedImage)
   // Render conditionnel basé sur l'état
   if (!token) {
     return (
@@ -440,7 +423,7 @@ const Room = () => {
             Veuillez vous connecter pour accéder à cette page
           </p>
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate('/login')}
             className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
           >
             Se connecter
@@ -470,7 +453,7 @@ const Room = () => {
             Vous devez d'abord créer au moins un type de pièce pour continuer.
           </p>
           <button
-            onClick={() => navigate("/create-room-type")}
+            onClick={() => navigate('/create-room-type')}
             className="bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold px-8 py-3 rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all"
           >
             Créer un type de pièce
@@ -500,15 +483,12 @@ const Room = () => {
         <div className="lg:w-1/3 space-y-8">
           {/* Section Upload */}
           <div>
-            <h2 className="text-xl font-semibold mb-4">
-              Upload a photo of your room
-            </h2>
+            <h2 className="text-xl font-semibold mb-4">Upload a photo of your room</h2>
             <div
-              className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${
-                isDragging
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-300 bg-gray-50 hover:border-blue-400"
-              }`}
+              className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${isDragging
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-300 bg-gray-50 hover:border-blue-400'
+                }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
@@ -527,9 +507,7 @@ const Room = () => {
                     <Upload className="mr-2" size={20} />
                     Upload an image
                   </button>
-                  <p className="text-gray-500 text-sm">
-                    ...or drag and drop an image.
-                  </p>
+                  <p className="text-gray-500 text-sm">...or drag and drop an image.</p>
                 </>
               ) : (
                 <div className="relative">
@@ -562,14 +540,14 @@ const Room = () => {
                 value={selectedRoomType}
                 onChange={(e) => setSelectedRoomType(e.target.value)}
               >
-                {userRooms.map((room) => (
-                  <option key={room.id} value={room.title}>
-                    {room.title}
+                {allRoomTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
                   </option>
                 ))}
               </select>
               <button
-                onClick={() => navigate("/create-room-type")}
+                onClick={() => navigate('/create-room-type')}
                 className="p-3 text-blue-500 hover:text-blue-600 border border-blue-500 hover:border-blue-600 rounded-lg transition-colors"
                 title="Créer un nouveau type"
               >
@@ -597,19 +575,14 @@ const Room = () => {
           {/* Section Génération */}
           <div className="flex items-center justify-between pt-4">
             <button
-              className={`flex-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold px-8 py-3 rounded-lg transition-all ${
-                isUploading || isGenerating
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:from-purple-600 hover:to-blue-600"
-              }`}
+              className={`flex-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold px-8 py-3 rounded-lg transition-all ${(isUploading || isGenerating) ? 'opacity-50 cursor-not-allowed' : 'hover:from-purple-600 hover:to-blue-600'
+                }`}
               onClick={handleRenderDesigns}
               disabled={isUploading || isGenerating || !selectedImage}
             >
-              {isUploading
-                ? "Uploading..."
-                : isGenerating
-                ? "Generating..."
-                : "Render designs"}
+              {isUploading ? 'Uploading...' :
+                isGenerating ? 'Generating...' :
+                  'Render designs'}
             </button>
           </div>
         </div>
@@ -618,13 +591,10 @@ const Room = () => {
         <div className="lg:w-2/3">
           <div>
             <h1 className="text-3xl font-bold mb-4">
-              Redesign your{" "}
-              <span className="text-blue-500">{selectedRoomType}</span> in
-              seconds
+              Redesign your <span className="text-blue-500">{selectedRoomType}</span> in seconds
             </h1>
             <p className="text-gray-600 text-lg mb-8">
-              Upload a room, specify the room type, and select your room theme
-              to redesign.
+              Upload a room, specify the room type, and select your room theme to redesign.
             </p>
 
             <div className="grid gap-8">
@@ -632,33 +602,25 @@ const Room = () => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">Original Image</h3>
                 <div className="bg-gray-700 rounded-xl aspect-[4/3] flex items-center justify-center overflow-hidden">
-                  {selectedImage ? (
-                    <img
-                      src={selectedImage}
-                      alt="Original room"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-teal-400">
-                      <Upload size={48} />
-                    </div>
-                  )}
+                <UploadZone
+                  onImageSelect={(image) => {
+                    setSelectedImage(image);
+                    setGeneratedImage(null);
+                  }}
+                  selectedImage={selectedImage}
+                />
                 </div>
               </div>
 
               {/* Image générée */}
               {(isUploading || isGenerating) && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    Generated Design
-                  </h3>
+                  <h3 className="text-lg font-semibold mb-2">Generated Design</h3>
                   <div className="bg-gray-700 rounded-xl aspect-[4/3] flex items-center justify-center">
                     <div className="flex flex-col items-center space-y-4">
                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
                       <p className="text-white">
-                        {isUploading
-                          ? "Uploading your image..."
-                          : "Generating your design..."}
+                        {isUploading ? 'Uploading your image...' : 'Generating your design...'}
                       </p>
                     </div>
                   </div>
@@ -683,7 +645,7 @@ const Room = () => {
                         className="bg-white text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
                         onClick={(e) => {
                           e.preventDefault();
-                          const link = document.createElement("a");
+                          const link = document.createElement('a');
                           link.href = `https://api.interiordecorator.ai${generatedImage}`;
                           link.download = `generated-${selectedRoomType}-${selectedStyle}.jpg`;
                           document.body.appendChild(link);
