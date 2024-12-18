@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { Upload } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import UploadZone from './UploadZone';
 
 // Fonctions utilitaires
 const isJsonResponse = (response) => {
@@ -602,13 +601,17 @@ const Room = () => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">Original Image</h3>
                 <div className="bg-gray-700 rounded-xl aspect-[4/3] flex items-center justify-center overflow-hidden">
-                <UploadZone
-                  onImageSelect={(image) => {
-                    setSelectedImage(image);
-                    setGeneratedImage(null);
-                  }}
-                  selectedImage={selectedImage}
-                />
+                  {selectedImage ? (
+                    <img
+                      src={selectedImage}
+                      alt="Original room"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-teal-400">
+                      <Upload size={48} />
+                    </div>
+                  )}
                 </div>
               </div>
 
